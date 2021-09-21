@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 export default function Register() {
     return (
         <View>
-            <Text></Text>
+            <Text>Registro</Text>
         </View>
     )
 }
