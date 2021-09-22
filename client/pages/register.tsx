@@ -1,10 +1,12 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
+import global from '../styles/global'
+import RegisterForm from '../components/register-form'
 
 export default function Register() {
     return (
-        <View>
-            <Text>Registro</Text>
+        <View style={global.container}>
+            <RegisterForm></RegisterForm>
         </View>
     )
 }

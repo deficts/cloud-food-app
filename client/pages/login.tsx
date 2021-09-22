@@ -1,8 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity} from 'react-native'
-import LoginForm from '../components/login-form'
-
 import global, { primary } from '../styles/global'
+import LoginForm from '../components/login-form'
 
 export default function Login({navigation}: {navigation: any}) {
     return (
