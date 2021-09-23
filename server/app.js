@@ -2,6 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
 const connectDB = require('./config/db')
+const serverless = require('serverless-http')
 
 // dotenv config
 dotenv.config()
@@ -13,8 +14,8 @@ connectDB()
 const app = express()
 
 // BodyParser
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true,  limit: '100mb'}));
+app.use(express.json({limit: '100mb'}));
 
 // Cross Origin Resource Sharing
 app.use(cors({ origin: '*' }))
@@ -34,4 +35,6 @@ app.use('/api/user', require('./routes/user'))
 app.use('/api/chef', require('./routes/chef'))
 
 // Listen in port
-app.listen(port, () => console.log(`Server listening at port: ${port}`))
+// app.listen(port, () => console.log(`Server listening at port: ${port}`))
+
+module.exports.handler = serverless(app);

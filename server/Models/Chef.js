@@ -13,12 +13,10 @@ const ChefSchema = mongoose.Schema({
         required: true
     },
     lat: {
-        type: String,
-        required: true
+        type: String
     },
     long: {
-        type: String,
-        required: true
+        type: String
     },
     profileImage: String
 })

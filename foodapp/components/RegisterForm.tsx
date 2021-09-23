@@ -13,11 +13,13 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 import {useAuth} from '../store/Auth/Auth';
 import global, {primary, inputBackground} from '../styles/global';
+import { ImagePickerResponse, launchImageLibrary} from 'react-native-image-picker';
 
 export default function RegisterForm() {
   const [profileImage, setProfileImage] = useState<
-    DocumentPickerResponse[] | null
+    string | null
   >(null);
+  const [base64, setBase64] = useState<string>('');
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,11 +29,18 @@ export default function RegisterForm() {
 
   const selectFile = async () => {
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+      launchImageLibrary({mediaType: 'photo', includeBase64: true}, (res: ImagePickerResponse) => {
+        if(res.assets?.length){
+          console.log(res.assets);
+          if(res.assets[0].uri){
+            setProfileImage(res.assets[0].uri);
+          }
+          if(res.assets[0].base64){
+            console.log(res.assets[0].base64);
+            setBase64(res.assets[0].base64);
+          }
+        }
       });
-      setProfileImage(res);
-      console.log(JSON.stringify(profileImage, null, 2));
     } catch (err) {
       setProfileImage(null);
     }
@@ -40,7 +49,7 @@ export default function RegisterForm() {
   const register = async (): Promise<void> => {
     isLoading(true);
     await auth
-      .register({email, lastName, name, profileImage: 'test'}, password)
+      .register({email, lastName, name, profileImage: base64}, password)
       .catch(error => {
         isLoading(false);
       });
@@ -57,7 +66,7 @@ export default function RegisterForm() {
             <Text style={styles.imageLabel}>Seleccionar imagen</Text>
           )}
           {profileImage && (
-            <Image source={{uri: profileImage[0].uri}} style={styles.image} />
+            <Image source={{uri: profileImage}} style={styles.image} />
           )}
         </View>
       </TouchableOpacity>
@@ -95,7 +104,7 @@ export default function RegisterForm() {
         onPress={register}
         style={[global.button, styles.input]}>
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator color="white"/>
         ) : (
           <Text style={[global.textCenter, global.buttonText]}>Ingresar</Text>
         )}
