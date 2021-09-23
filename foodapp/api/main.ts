@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const api = Axios.create({
-  baseURL: 'https://p1no9yp40d.execute-api.us-east-1.amazonaws.com/dev/api',
+  baseURL: 'http://localhost:5050/api',
 });
 
 export const setToken = (token: string) => {
