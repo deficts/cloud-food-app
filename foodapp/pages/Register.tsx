@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import global from '../styles/global'
-import RegisterForm from '../components/register-form'
+import RegisterForm from '../components/RegisterForm'
 
 export default function Register() {
     return (

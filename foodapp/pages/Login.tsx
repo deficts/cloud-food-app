@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity} from 'react-native'
 import global, { primary } from '../styles/global'
-import LoginForm from '../components/login-form'
+import LoginForm from '../components/LoginForm'
 
 export default function Login({navigation}: {navigation: any}) {
     return (
@@ -16,7 +16,7 @@ export default function Login({navigation}: {navigation: any}) {
             {/* Register */}
             <View style={styles.registerText}>
                 <Text>¿No tienes cuenta?</Text>
-                <TouchableOpacity onPress={() => console.log("Registro")}>
+                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                     <Text style={styles.link}>
                         Regístrate
                     </Text>
