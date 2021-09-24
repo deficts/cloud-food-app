@@ -2,6 +2,8 @@ const router = require('express').Router()
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const AWS = require('aws-sdk');
+const { ACCESS_KEY_ID, SECRET_ACCESS_KEY, AWS_REGION, S3_BUCKET } = process.env
 
 // @route   POST /api/user/register
 // @desc    Register a new admin
@@ -16,6 +18,37 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
+        let image = null;
+
+        if (req.body.profileImage) {
+            AWS.config.update({
+                accessKeyId: ACCESS_KEY_ID,
+                secretAccessKey: SECRET_ACCESS_KEY,
+                region: AWS_REGION
+            })
+
+            const s3 = new AWS.S3()
+
+            const base64Data = new Buffer.from(req.body.profileImage.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+
+            const params = {
+                Bucket: S3_BUCKET,
+                Body: base64Data,
+                ACL: 'public-read',
+                ContentEncoding: 'base64',
+                ContentType: `image/jpeg`,
+                Key: `${req.body.email}.jpeg`
+            }
+
+            try {
+                const { Location } = await s3.upload(params).promise();
+                image = Location;
+            } catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: 'Error al encontrar usuario', error })
+            }
+        }
+
         // Add the new User
         const user = new User({
             email: req.body.email,
@@ -24,16 +57,23 @@ router.post('/register', async (req, res) => {
             long: req.body.long,
             name: req.body.name,
             lastName: req.body.lastName,
-            profileImage: req.body.profileImage
+            profileImage: image
         })
 
         // Save in DB
         await user.save().catch(
             (error) => {
-                res.status(400).json({ message: "No se pudo crear el usuario", error})
+                res.status(400).json({ message: "No se pudo crear el usuario", error })
             }
         )
-        res.status(200).json({ message: "Usuario creado con éxito" })
+
+        const savedUser = await User.findOne({ email: req.body.email }).catch(
+            (error) => {
+                return res.status(500).json({ message: 'Error al encontrar usuario', error })
+            }
+        )
+
+        res.status(200).json({ user: savedUser })
 
     } catch (err) {
         res.status(500).json({ message: err })
@@ -70,6 +110,7 @@ router.put('/:id', async (req, res) => {
 // @role  User
 router.post('/login', async (req, res) => {
     // Check if user in DB
+    console.log(req);
     const user = await User.findOne({ email: req.body.email }).catch(
         (error) => {
             return res.status(500).json({ message: 'Error al encontrar usuario', error })
@@ -93,7 +134,6 @@ router.post('/login', async (req, res) => {
     // Create and assign token
     const token = await jwt.sign(payload, process.env.TOKEN_SECRET)
 
-    console.log(token);
     res.status(200).json({ token, user: payload.user })
 })
 
