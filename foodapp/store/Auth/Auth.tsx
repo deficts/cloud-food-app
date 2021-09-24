@@ -44,7 +44,7 @@ const AuthProvider: React.FC = ({children}) => {
   const register = async (userData: UserData, password: string): Promise<void> => {
     const _userData = await authService.register(userData, password).catch(error => {
       setLoading(false);
-      console.log('Error at login', error);
+      console.error('Error at register', error);
       throw error;
     });
 
@@ -57,7 +57,7 @@ const AuthProvider: React.FC = ({children}) => {
   const login = async (credentials: UserCredentials): Promise<void> => {
     const _userData = await authService.login(credentials).catch(error => {
       setLoading(false);
-      console.log('Error at login', error);
+      console.error('Error at login', error);
       throw error;
     });
 

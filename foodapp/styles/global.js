@@ -39,5 +39,16 @@ export default StyleSheet.create({
     },
     textCenter: {
         textAlign: 'center'
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    subtitle: {
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    text: {
+        fontSize: 14
     }
 });
