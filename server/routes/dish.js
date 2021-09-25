@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const Dish = require('../models/Dish')
 const Chef = require('../models/Chef')
+const User = require('../models/User')
 
 
 
@@ -71,5 +72,43 @@ router.delete('/:id', async (req, res) => {
 
     } catch (err) {
         res.status(400).json({ message: err })
+    }
+})
+
+
+// @route   Get /api/dish/dishes
+// @desc    Get all dishes from a chef
+// @access  Private
+
+router.get('/dishes', async (req, res) => {
+    try {
+        const entry = await Dish.find({})
+        var exportDishes = JSON.parse(JSON.stringify(entry))
+        for (let i = 0; i < entry.length; i++){
+            let user = User.findById(entry[i].chefID)
+            exportEntry.user = user
+        }
+        res.json(exportDishes)
+    } catch (err) {
+        res.status(500).json({ message: err })
+    }
+})
+
+
+// @route   Get /api/dish/dishes
+// @desc    Get all dishes from a chef
+// @access  Private
+
+router.get('/dishes', async (req, res) => {
+    try {
+        const entry = await Dish.find({})
+        var exportEntry = JSON.parse(JSON.stringify(entry))
+        for (let i = 0; i < entry.length; i++){
+            let chef = Chef.findById(entry[i].chefID)
+            exportEntry.chef = chef
+        }
+        res.json(exportEntry)
+    } catch (err) {
+        res.status(500).json({ message: err })
     }
 })
