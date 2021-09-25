@@ -33,6 +33,7 @@ app.get('/', function (req, res) {
 
 app.use('/api/user', require('./routes/user'))
 app.use('/api/chef', require('./routes/chef'))
+app.use('/api/dish', require('./routes/dish'))
 
 // Listen in port
 app.listen(port, () => console.log(`Server listening at port: ${port}`))
