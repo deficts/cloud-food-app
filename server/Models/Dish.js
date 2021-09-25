@@ -8,7 +8,8 @@ const DishSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Chef',
         required: true
-    }
+    },
+    image: String
 })
 
 module.exports = mongoose.model('Dish', DishSchema)

@@ -5,6 +5,26 @@ const User = require('../models/User')
 const AWS = require('aws-sdk');
 const { ACCESS_KEY_ID, SECRET_ACCESS_KEY, AWS_REGION, S3_BUCKET } = process.env
 
+// @route   Get /api/dish/dishes
+// @desc    Get all dishes from a chef
+// @access  Private
+router.get('/dishes', async (req, res) => {
+    try {
+        const parsedDishes = [];
+        const entry = await Dish.find()
+        for (let dish of entry){
+            let parsedDish = JSON.parse(JSON.stringify(dish));
+            let user = await User.findById(dish.chefID)
+            parsedDish['user'] = user
+            parsedDishes.push(parsedDish);
+        }
+        res.status(200).json({dishes: parsedDishes});
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: err })
+    }
+})
+
 // @route   POST /api/dish/create
 // @desc    Create a new dish
 // @access  Public
@@ -107,24 +127,6 @@ router.delete('/:id', async (req, res) => {
 
     } catch (err) {
         res.status(400).json({ message: err })
-    }
-})
-
-// @route   Get /api/dish/dishes
-// @desc    Get all dishes from a chef
-// @access  Private
-router.get('/dishes', async (req, res) => {
-    try {
-        const entry = await Dish.find({})
-        var exportDishes = JSON.parse(JSON.stringify(entry))
-        for (let i = 0; i < entry.length; i++){
-            console.log(entry[i].chefID)
-            let user = User.findById(entry[i].chefID)
-            exportEntry.user = user
-        }
-        res.json(exportDishes)
-    } catch (err) {
-        res.status(500).json({ message: err })
     }
 })
 
