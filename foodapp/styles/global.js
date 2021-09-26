@@ -24,7 +24,8 @@ export default StyleSheet.create({
         backgroundColor: inputBackground,
         padding: 8,
         borderRadius: 5,
-        fontSize: 18
+        fontSize: 18,
+        margin: 8
     },
     button: {
         height: 40,
