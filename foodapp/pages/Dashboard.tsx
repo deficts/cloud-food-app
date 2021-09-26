@@ -1,51 +1,139 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
-
+import React, {useState, useEffect} from 'react';
+import {ScrollView, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import ComposeDishModal from '../components/ComposeDishModal';
 import DishCard from '../components/DishCard';
+import {dishService} from '../services/dishService';
+import {USER_DATA_KEY} from '../store/Auth/Auth';
+import global, {primary} from '../styles/global';
+import {getObject} from '../util/storage';
 
 export default function Dashboard() {
-  const dishes = [
-    {
-      image: 'https://www.superama.com.mx/views/micrositio/recetas/images/fiestas-patrias/enchiladas-poblanas/Web_fotoreceta.jpg',
-      name: 'Enchiladas suizas',
-      price: 90, 
-      chefPicture: 'https://depor.com/resizer/aaXNykAG-lhkvXUSVexJwsLKgfo=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/K4UCST7IPZDIVJUUDEOUEYZ6XA.webp',
-      chefName: 'Chavo Del Ocho',
-      description: 'Enchiladas preparadas bla bla bla bla bla'
-    },
-    {
-      image: 'http://www.comedera.com/wp-content/uploads/2017/08/tacos-al-pastor-receta.jpg',
-      name: 'Tacos al pastor',
-      price: 50, 
-      chefPicture: 'https://pbs.twimg.com/profile_images/991180595710513152/V5O-Z320.jpg',
-      chefName: 'Enrique Peña Nieto',
-      description: 'Tacos al pastor con bla bla bla bla bla'
-    },
-    {
-      image: 'https://www.lavanguardia.com/files/og_thumbnail/files/fp/uploads/2021/03/30/6063031b90a87.r_d.1083-871-0.jpeg',
-      name: 'Pizza',
-      price: 120, 
-      chefPicture: 'https://lawebdelacultura.com/wp-content/uploads/2018/05/76-1.jpg',
-      chefName: 'Mario',
-      description: 'Pizza con champiñones bla bla bla bla bla'
-    }
-  ]
+  const [dishes, setDishes] = useState<any[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDesc] = useState('');
+  const [price, setPrice] = useState('');
+  const [base64, setBase64] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const getDishes = async () => {
+    dishService
+      .getDishes()
+      .then(response => {
+        let dishes = response.dishes.map((d:any) => {
+          return {
+            image: d.image,
+            name: d.name,
+            price: d.price, 
+            chefPicture: d.user.profileImage,
+            chefName: `${d.user.name} ${d.user.lastName}`,
+            description: d.description
+          }
+        });
+        setDishes(dishes);
+      })
+      .catch(error => {
+        console.error(`Error at getDishes: ${error.message}`)
+      })
+  }
+
+  useEffect(() => {
+    getDishes();
+  }, [])
+
+  const createDish = async () => {
+    setLoading(true);
+    const user = await getObject(USER_DATA_KEY);
+    const dish = {
+      chefID: user._id,
+      price: price,
+      name: title,
+      description: description,
+      base64: base64,
+    };
+
+    dishService
+      .postDish(dish)
+      .then(response => {
+        setModalVisible(false);
+        setTitle('');
+        setPrice('');
+        setBase64('');
+        setDesc('');
+      })
+      .catch(error => {
+        console.error('Error at creting the dish');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
-    <ScrollView>
-      {dishes.map((d, i) => {
-        return (
-          <DishCard 
-            key={i}
-            image={d.image}
-            name={d.name}
-            price={d.price} 
-            chefPicture={d.chefPicture}
-            chefName={d.chefName}
-            description={d.description} 
-          />
-        )
-      })} 
-    </ScrollView>
+    <>
+      <ScrollView>
+        {dishes.map((d, i) => {
+          return (
+            <DishCard 
+              key={i}
+              image={d.image}
+              name={d.name}
+              price={d.price} 
+              chefPicture={d.chefPicture}
+              chefName={d.chefName}
+              description={d.description} 
+            />
+          )
+        })} 
+      </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <ComposeDishModal
+          title={title}
+          setTitle={setTitle}
+          price={price}
+          setPrice={setPrice}
+          description={description}
+          setDesc={setDesc}
+          base64={base64}
+          setBase64={setBase64}
+          closeCallback={() => {
+            setModalVisible(false);
+            setTitle('');
+            setPrice('');
+            setBase64('');
+            setDesc('');
+          }}
+          createDishFunction={createDish}
+          loading={loading}
+        />
+      </Modal>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => {
+          setModalVisible(true);
+        }}>
+        <Text style={[global.header, {color: 'white'}]}>+</Text>
+      </TouchableOpacity>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  fab: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 70,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    height: 70,
+    backgroundColor: primary,
+    borderRadius: 100
+  },
+});
