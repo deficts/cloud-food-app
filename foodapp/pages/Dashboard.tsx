@@ -21,7 +21,7 @@ export default function Dashboard() {
     const dish = {
       chefID: user._id,
       price: price,
-      title: title,
+      name: title,
       description: description,
       base64: base64,
     };
@@ -36,7 +36,7 @@ export default function Dashboard() {
         setDesc('');
       })
       .catch(error => {
-        console.log('Error at creting the dish');
+        console.error('Error at creting the dish');
       })
       .finally(() => {
         setLoading(false);
