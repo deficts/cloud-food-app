@@ -16,20 +16,22 @@ export default function Dashboard() {
   const [base64, setBase64] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getDishes = async () => {
+  const getDishes = async (userEmail:string) => {
     dishService
       .getDishes()
       .then(response => {
-        let dishes = response.dishes.map((d:any) => {
-          return {
-            image: d.image,
-            name: d.name,
-            price: d.price, 
-            chefPicture: d.user.profileImage,
-            chefName: `${d.user.name} ${d.user.lastName}`,
-            description: d.description
-          }
-        });
+        let dishes = response.dishes
+          .filter((d:any) => d.user.email != userEmail)
+          .map((d:any) => {
+            return {
+              image: d.image,
+              name: d.name,
+              price: d.price, 
+              chefPicture: d.user.profileImage,
+              chefName: `${d.user.name} ${d.user.lastName}`,
+              description: d.description
+            }
+          });
         setDishes(dishes);
       })
       .catch(error => {
@@ -38,7 +40,9 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    getDishes();
+    getObject(USER_DATA_KEY).then(_user => {
+      getDishes(_user.email);
+    });
   }, [])
 
   const createDish = async () => {
