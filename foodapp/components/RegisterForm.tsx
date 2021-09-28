@@ -8,9 +8,6 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import DocumentPicker, {
-  DocumentPickerResponse,
-} from 'react-native-document-picker';
 import {useAuth} from '../store/Auth/Auth';
 import global, {primary, inputBackground} from '../styles/global';
 import { ImagePickerResponse, launchImageLibrary} from 'react-native-image-picker';
@@ -31,12 +28,12 @@ export default function RegisterForm() {
     try {
       launchImageLibrary({mediaType: 'photo', includeBase64: true}, (res: ImagePickerResponse) => {
         if(res.assets?.length){
-          console.log(res.assets);
+          // console.log(res.assets);
           if(res.assets[0].uri){
             setProfileImage(res.assets[0].uri);
           }
           if(res.assets[0].base64){
-            console.log(res.assets[0].base64);
+            // console.log(res.assets[0].base64);
             setBase64(res.assets[0].base64);
           }
         }
@@ -57,18 +54,13 @@ export default function RegisterForm() {
 
   return (
     <>
-      {/* <Image
-                source={profileImage.uri || ''}
-            ></Image> */}
-      <TouchableOpacity onPress={selectFile}>
-        <View style={styles.imageContainer}>
+      <TouchableOpacity onPress={selectFile} style={styles.imageContainer}>
           {!profileImage && (
             <Text style={styles.imageLabel}>Seleccionar imagen</Text>
           )}
           {profileImage && (
             <Image source={{uri: profileImage}} style={styles.image} />
           )}
-        </View>
       </TouchableOpacity>
 
       <TextInput

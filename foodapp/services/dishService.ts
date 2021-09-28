@@ -8,12 +8,26 @@ const postDish = (dish: any): Promise<any> => {
         resolve(response.data);
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
         reject(error);
       });
   });
 };
 
+const getDishes = (): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    api.get('dish/dishes')
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      })
+  })
+}
+
 export const dishService = {
     postDish,
+    getDishes
 };
