@@ -8,7 +8,7 @@ const UserDrawerNavigator = () => {
   return (
     <Drawer.Navigator>
       <Drawer.Screen name="Dashboard" component={Dashboard} />
-      <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Perfil" component={Settings} />
     </Drawer.Navigator>
   );
 };
