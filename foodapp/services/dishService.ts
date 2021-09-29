@@ -27,7 +27,21 @@ const getDishes = (): Promise<any> => {
   })
 }
 
+const deleteDish = (id:string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    api.delete(`dish/${id}`)
+      .then(response => {
+        resolve(response)
+      })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      })
+  })
+}
+
 export const dishService = {
     postDish,
-    getDishes
+    getDishes,
+    deleteDish
 };
