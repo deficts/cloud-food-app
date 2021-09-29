@@ -5,7 +5,7 @@ import {dishService} from '../services/dishService';
 import {USER_DATA_KEY} from '../store/Auth/Auth';
 import {getObject} from '../util/storage';
 
-export default function Dashboard() {
+export default function Dashboard({navigation}: {navigation: any}) {
   const [dishes, setDishes] = useState<any[]>([]);
 
   const getDishes = async (userID:string) => {
@@ -33,10 +33,13 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    getObject(USER_DATA_KEY).then(_user => {
-      getDishes(_user._id);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getObject(USER_DATA_KEY).then(_user => {
+        getDishes(_user._id);
+      });
     });
-  }, [])
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <>

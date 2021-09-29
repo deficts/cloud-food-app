@@ -7,7 +7,7 @@ import {dishService} from '../services/dishService';
 import {USER_DATA_KEY} from '../store/Auth/Auth';
 import {getObject} from '../util/storage';
 
-export default function Register() {
+export default function MyDishes({navigation}: {navigation: any}) {
   const [myDishes, setDishes] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -39,12 +39,15 @@ export default function Register() {
         console.error(`Error at getDishes: ${error.message}`)
       })
   }
-    
+
   useEffect(() => {
-    getObject(USER_DATA_KEY).then(_user => {
-      getDishes(_user._id);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getObject(USER_DATA_KEY).then(_user => {
+        getDishes(_user._id);
+      });
     });
-  }, [])
+    return unsubscribe;
+  }, [navigation]);
 
   const createDish = async () => {
     setLoading(true);
