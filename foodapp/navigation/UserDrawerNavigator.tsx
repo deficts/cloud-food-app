@@ -10,7 +10,7 @@ const UserDrawerNavigator = () => {
     <Drawer.Navigator>
       <Drawer.Screen name="Dashboard" component={Dashboard} />
       <Drawer.Screen name="Mis platillos" component={MyDishes} />
-      <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Mi perfil" component={Settings} />
     </Drawer.Navigator>
   );
 };

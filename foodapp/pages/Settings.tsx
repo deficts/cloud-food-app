@@ -42,7 +42,7 @@ const Settings = () => {
     <View style={styles.container}>
       {renderUserData()}
       <TouchableOpacity
-        style={[global.button, styles.button]}
+        style={[global.buttonDanger, styles.button]}
         onPress={() => {
           auth.logout();
         }}
