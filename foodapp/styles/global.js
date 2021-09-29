@@ -33,6 +33,12 @@ export default StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 5
     },
+    buttonDanger: {
+        height: 40,
+        backgroundColor: '#FF7557',
+        justifyContent: 'center',
+        borderRadius: 5
+    },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
