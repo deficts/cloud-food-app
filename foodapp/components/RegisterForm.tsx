@@ -68,6 +68,7 @@ export default function RegisterForm() {
         style={[global.input, styles.input]}
         onChangeText={text => setName(text)}
         defaultValue={name}
+        placeholderTextColor={'grey'}
       />
 
       <TextInput
@@ -75,6 +76,7 @@ export default function RegisterForm() {
         style={[global.input, styles.input]}
         onChangeText={text => setLastName(text)}
         defaultValue={lastName}
+        placeholderTextColor={'grey'}
       />
 
       <TextInput
@@ -82,6 +84,7 @@ export default function RegisterForm() {
         style={[global.input, styles.input]}
         onChangeText={text => setEmail(text)}
         defaultValue={email}
+        placeholderTextColor={'grey'}
       />
 
       <TextInput
@@ -90,6 +93,7 @@ export default function RegisterForm() {
         style={[global.input, styles.input]}
         onChangeText={text => setPassword(text)}
         defaultValue={password}
+        placeholderTextColor={'grey'}
       />
 
       <TouchableOpacity
