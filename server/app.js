@@ -36,6 +36,6 @@ app.use('/api/chef', require('./routes/chef'))
 app.use('/api/dish', require('./routes/dish'))
 
 // Listen in port
-app.listen(port, () => console.log(`Server listening at port: ${port}`))
+//app.listen(port, () => console.log(`Server listening at port: ${port}`))
 
-// module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);
