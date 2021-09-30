@@ -24,11 +24,18 @@ export default StyleSheet.create({
         backgroundColor: inputBackground,
         padding: 8,
         borderRadius: 5,
-        fontSize: 18
+        fontSize: 18,
+        margin: 8
     },
     button: {
         height: 40,
         backgroundColor: primary,
+        justifyContent: 'center',
+        borderRadius: 5
+    },
+    buttonDanger: {
+        height: 40,
+        backgroundColor: '#FF7557',
         justifyContent: 'center',
         borderRadius: 5
     },
@@ -39,5 +46,16 @@ export default StyleSheet.create({
     },
     textCenter: {
         textAlign: 'center'
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    subtitle: {
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    text: {
+        fontSize: 14
     }
 });

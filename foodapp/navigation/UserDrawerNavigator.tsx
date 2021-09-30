@@ -1,6 +1,7 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import React from 'react';
 import Dashboard from '../pages/Dashboard';
+import MyDishes from '../pages/MyDishes';
 import Settings from '../pages/Settings';
 
 const UserDrawerNavigator = () => {
@@ -8,7 +9,8 @@ const UserDrawerNavigator = () => {
   return (
     <Drawer.Navigator>
       <Drawer.Screen name="Dashboard" component={Dashboard} />
-      <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Mis platillos" component={MyDishes} />
+      <Drawer.Screen name="Mi perfil" component={Settings} />
     </Drawer.Navigator>
   );
 };

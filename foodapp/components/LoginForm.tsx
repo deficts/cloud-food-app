@@ -45,7 +45,7 @@ export default function LoginForm() {
         onPress={() => login({username: email, password})}
         style={[global.button, styles.input]}>
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator color="white" />
         ) : (
           <Text style={[global.textCenter, global.buttonText]}>Ingresar</Text>
         )}
