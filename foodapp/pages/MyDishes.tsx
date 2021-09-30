@@ -1,5 +1,12 @@
-import React, {useState, useEffect} from 'react'
-import { ScrollView, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 import global, {primary} from '../styles/global';
 import ComposeDishModal from '../components/ComposeDishModal';
 import DishCard from '../components/DishCard';
@@ -15,30 +22,35 @@ export default function MyDishes({navigation}: {navigation: any}) {
   const [price, setPrice] = useState('');
   const [base64, setBase64] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingDishes, setLoadingDishes] = useState<boolean>(false);
 
-  const getDishes = async (userID:string) => {
+  const getDishes = async (userID: string) => {
+    setLoadingDishes(true);
     dishService
       .getDishes()
       .then(response => {
         let dishes = response.dishes
-          .filter((d:any) => d.user._id == userID)
-          .map((d:any) => {
+          .filter((d: any) => d.user._id == userID)
+          .map((d: any) => {
             return {
               id: d._id,
               image: d.image,
               name: d.name,
-              price: d.price, 
+              price: d.price,
               chefPicture: d.user.profileImage,
               chefName: `${d.user.name} ${d.user.lastName}`,
-              description: d.description
-            }
+              description: d.description,
+            };
           });
         setDishes(dishes);
       })
       .catch(error => {
-        console.error(`Error at getDishes: ${error.message}`)
+        console.error(`Error at getDishes: ${error.message}`);
       })
-  }
+      .finally(() => {
+        setLoadingDishes(false);
+      });
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -48,6 +60,12 @@ export default function MyDishes({navigation}: {navigation: any}) {
     });
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    getObject(USER_DATA_KEY).then(_user => {
+      getDishes(_user._id);
+    });
+  }, [modalVisible]);
 
   const createDish = async () => {
     setLoading(true);
@@ -79,23 +97,27 @@ export default function MyDishes({navigation}: {navigation: any}) {
 
   return (
     <>
-      <ScrollView>
-        {myDishes.map((d, i) => {
-          return (
-            <DishCard 
-              key={i}
-              id={d.id}
-              image={d.image}
-              name={d.name}
-              price={d.price} 
-              chefPicture={d.chefPicture}
-              chefName={d.chefName}
-              description={d.description}
-              isMine={true}
-            />
-          )
-        })} 
-      </ScrollView>
+      {loadingDishes ? (
+        <ActivityIndicator />
+      ) : (
+        <ScrollView>
+          {myDishes.map((d, i) => {
+            return (
+              <DishCard
+                key={i}
+                id={d.id}
+                image={d.image}
+                name={d.name}
+                price={d.price}
+                chefPicture={d.chefPicture}
+                chefName={d.chefName}
+                description={d.description}
+                isMine={true}
+              />
+            );
+          })}
+        </ScrollView>
+      )}
       <Modal
         animationType="slide"
         transparent={true}
@@ -131,7 +153,7 @@ export default function MyDishes({navigation}: {navigation: any}) {
         <Text style={[global.header, {color: 'white'}]}>+</Text>
       </TouchableOpacity>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -144,6 +166,6 @@ const styles = StyleSheet.create({
     right: 10,
     height: 70,
     backgroundColor: primary,
-    borderRadius: 100
+    borderRadius: 100,
   },
 });
